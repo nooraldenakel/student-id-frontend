@@ -33,7 +33,7 @@ const StudentInfoPage = () => {
 
   const accessToken = localStorage.getItem("accessToken");
   const refreshToken = localStorage.getItem("refreshToken");
-  const [studentData, setStudentData] = useState<StudentData | null>(null)
+    const [studentData, setStudentData] = useState<StudentData | null>(null)
   const [loading, setLoading] = useState(true)
   const [birthYear, setBirthYear] = useState('')
   const [birthDate, setBirthDate] = useState('')
@@ -44,81 +44,65 @@ const StudentInfoPage = () => {
   const [analyzingImage, setAnalyzingImage] = useState(false)
   const [submitting, setSubmitting] = useState(false)
     const [fetchingInfo, setFetchingInfo] = useState(false)
-  useEffect(() => {
-    if (!accessToken || !examCode) {
-      navigate('/')
-      return
-    }
+    useEffect(() => {
+        if (!accessToken || !examCode) {
+            navigate('/')
+            return;
+        }
 
-    // Simulate API call to fetch student data
-    const fetchStudentData = async () => {
-      setLoading(true)
-      
-      // Mock API response - replace with actual API call
-        setTimeout(() => {
-            const fetchStudentInfo = async () => {
-                setFetchingInfo(true)
-                const url = `/student/search?query=${examCode}`
+        const fetchStudentInfo = async () => {
+            ;
+            setFetchingInfo(true)
 
-                try {
-                    const response = await fetch(url, {
-                        method: "GET",
-                        headers: {
-                            'Authorization': `Bearer ${accessToken}`
-                        }
-                    })
-                    if (!response.ok) throw new Error('Fetch failed')
+            const url = `/student/search?query=${examCode}`
 
-                    const data = await response.json()
-
-                    const mockData: StudentData = {
-                        name: studentName,
-                        examCode: examCode,
-                        collegeDepartment: data.section,
-                        studyType: data.studyType,
-                        // Simulate some students having existing data
-                        birthYear: Math.random() > 0.5 ? data.birthDate : undefined,
-                        birthDate: Math.random() > 0.5 ? data.birthDate : undefined,
-                        imageUrl: Math.random() > 0.5 ? data.imageUrl : undefined,
-                        imageAnalysis: Math.random() > 0.5 ? {
-                            headPosition: true,
-                            eyesOpen: true,
-                            glasses: true,
-                            whiteBackground: true,
-                            goodLighting: true
-                        } : undefined
+            try {
+                const response = await fetch(url, {
+                    method: "GET",
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`
                     }
+                })
+                if (!response.ok) throw new Error('Fetch failed')
 
-                    setStudentData(mockData)
+                const data = await response.json()
 
-                    // Set initial values if data exists
-                    if (mockData.birthYear) {
-                        setBirthYear(mockData.birthYear)
-                    }
-                    if (mockData.birthDate) {
-                        setBirthDate(mockData.birthDate)
-                    }
-                    if (mockData.imageUrl) {
-                        setImagePreview(mockData.imageUrl)
-                    }
-                    if (mockData.imageAnalysis) {
-                        setImageAnalysis(mockData.imageAnalysis)
-                    }
-
-                } catch (err) {
-                    console.error('❌ Error loading student info:', err)
-                } finally {
-                    setFetchingInfo(false)
+                const mockData: StudentData = {
+                    name: data.studentName,
+                    examCode: data.examCode,
+                    collegeDepartment: data.section,
+                    studyType: data.studyType,
+                    // Simulate some students having existing data
+                    birthYear: Math.random() > 0.5 ? data.birthDate : undefined,
+                    birthDate: Math.random() > 0.5 ? data.birthDate : undefined,
+                    imageUrl: Math.random() > 0.5 ? data.imageUrl : undefined,
+                    imageAnalysis: Math.random() > 0.5 ? {
+                        headPosition: true,
+                        eyesOpen: true,
+                        glasses: true,
+                        whiteBackground: true,
+                        goodLighting: true
+                    } : undefined
                 }
-            }
-        
-            setLoading(false)
-            fetchingInfo()
-      }, 1000)
-    }
 
-    fetchStudentData()
-  }, [studentName, examCode, navigate])
+                setStudentData(mockData)
+
+                if (data.birthYear) {
+                    setBirthDate(studentData?.birthYear ? studentData?.birthYear : '---')
+                }
+                if (data.imageUrl) {
+                    setImagePreview(studentData?.imageUrl ? studentData?.imageUrl : '---')
+                }
+
+            } catch (err) {
+                console.error('❌ Error loading student info:', err)
+            } finally {
+                setFetchingInfo(false)
+            }
+        }
+
+        fetchStudentInfo()
+    }, [studentName, examCode, navigate])
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
