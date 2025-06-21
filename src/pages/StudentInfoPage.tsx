@@ -95,13 +95,14 @@ const StudentInfoPage = () => {
                     setImagePreview(studentData?.imageUrl ? studentData?.imageUrl : '---')
                 }
 
-                setLoading(false)
+                
 
             } catch (err) {
                 console.error('❌ Error loading student info:', err)
             } finally {
                 setFetchingInfo(false)
             }
+            setLoading(false)
         }
 
         fetchStudentInfo()
