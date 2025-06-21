@@ -280,7 +280,7 @@ const StudentInfoPage = () => {
                   <User className="w-5 h-5 text-blue-600" />
                   <div className="text-right">
                     <p className="text-sm text-blue-600 font-medium">اسم الطالب</p>
-                    <p className="font-bold text-gray-800">{studentData?.name}</p>
+                    <p className="font-bold text-gray-800">{studentData.name}</p>
                   </div>
                 </div>
 
@@ -288,7 +288,7 @@ const StudentInfoPage = () => {
                   <Hash className="w-5 h-5 text-emerald-600" />
                   <div className="text-right">
                     <p className="text-sm text-emerald-600 font-medium">الرقم الامتحاني</p>
-                    <p className="font-bold text-gray-800">{studentData?.examCode}</p>
+                    <p className="font-bold text-gray-800">{studentData.examCode}</p>
                   </div>
                 </div>
 
@@ -296,7 +296,7 @@ const StudentInfoPage = () => {
                   <GraduationCap className="w-5 h-5 text-purple-600" />
                   <div className="text-right">
                     <p className="text-sm text-purple-600 font-medium">القسم</p>
-                    <p className="font-bold text-gray-800">{studentData?.collegeDepartment}</p>
+                    <p className="font-bold text-gray-800">{studentData.collegeDepartment}</p>
                   </div>
                 </div>
 
@@ -304,7 +304,7 @@ const StudentInfoPage = () => {
                   <Clock className="w-5 h-5 text-orange-600" />
                   <div className="text-right">
                     <p className="text-sm text-orange-600 font-medium">نوع الدراسة</p>
-                    <p className="font-bold text-gray-800">{studentData?.studyType}</p>
+                    <p className="font-bold text-gray-800">{studentData.studyType}</p>
                   </div>
                 </div>
               </div>
@@ -319,7 +319,7 @@ const StudentInfoPage = () => {
             >
               <h2 className="text-xl font-semibold text-gray-800 mb-4 text-right">تاريخ الميلاد</h2>
               
-              {studentData?.birthYear || studentData?.birthDate ? (
+              {studentData.birthYear || studentData.birthDate ? (
                 // Show existing birth data
                 <div className="space-y-4">
                   {studentData.birthYear && (
@@ -438,7 +438,7 @@ const StudentInfoPage = () => {
               <h2 className="text-xl font-semibold text-gray-800 mb-4 text-right">الصورة الشخصية</h2>
               
               <div className="space-y-4">
-                {studentData?.imageUrl && !selectedImage ? (
+                {studentData.imageUrl && !selectedImage ? (
                   // Show existing image
                   <div className="text-center">
                     <div className="relative inline-block">
@@ -593,9 +593,9 @@ const StudentInfoPage = () => {
                   animate={{ opacity: 1 }}
                   className="text-red-600 text-sm text-center mt-3 p-3 bg-red-50 rounded-lg border-2 border-red-200"
                 >
-                  {!studentData?.birthYear && !studentData?.birthDate && !birthYear && !birthDate && 
-                    "يرجى إدخال تاريخ الميلاد"}
-                  {(!studentData?.imageUrl && !selectedImage) && 
+                  {!studentData.birthYear && !studentData.birthDate && !birthYear && !birthDate && 
+                    "يرجى إدخال تاريخ الميلاد"} 
+                  {(!studentData.imageUrl && !selectedImage) && 
                     "يرجى رفع الصورة الشخصية"}
                   {imageAnalysis && !Object.values(imageAnalysis).every(result => result === true) && 
                     "يرجى التأكد من أن جميع نتائج تحليل الصورة صالحة"}
