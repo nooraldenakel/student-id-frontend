@@ -67,9 +67,9 @@ const StudentInfoPage = () => {
                 }
 
                 const data = await response.json();
-                console.log('📦 API data:', data);
+
                 // Handle optional fields safely
-                const birthYear = data.birthDate ? new Date(data.birthDate).getFullYear().toString() : "---";
+                const birthYear = data.birthDate ? new Date(data.birthDate).getFullYear().toString() : undefined;
                 const birthDate = data.birthDate || undefined;
                 const imageUrl = data.imageUrl || undefined;
 
@@ -79,12 +79,19 @@ const StudentInfoPage = () => {
 
                 setStudentData({
                     name: studentName || 'غير معروف',
-                    examCode: examCode || 0,
+                    examCode: examCode,
                     collegeDepartment: data.section || 'غير محدد',
                     studyType: data.studyType || 'غير محدد',
                     birthYear,
                     birthDate,
-                    imageUrl
+                    imageUrl,
+                    imageAnalysis: {
+                        headPosition: true,
+                        eyesOpen: true,
+                        glasses: true,
+                        whiteBackground: true,
+                        goodLighting: true
+                    }
                 });
 
             } catch (error) {
@@ -94,10 +101,7 @@ const StudentInfoPage = () => {
                 setLoading(false); // ✅ Always end loading
                 setFetchingInfo(false);
             }
-        };
-
-
-
+        }
         fetchStudentInfo()
     }, [])
 
