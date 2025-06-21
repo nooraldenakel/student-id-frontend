@@ -128,11 +128,11 @@ const StudentInfoPage = () => {
     // Simulate image analysis
     setTimeout(() => {
       const analysis: ImageAnalysis = {
-        headPosition: Math.random() > 0.3,
-        eyesOpen: Math.random() > 0.2,
-        glasses: Math.random() > 0.5,
-        whiteBackground: Math.random() > 0.4,
-        goodLighting: Math.random() > 0.3
+        headPosition: Math.random() > 0.1,
+        eyesOpen: Math.random() > 0.1,
+        glasses: Math.random() > 0.1,
+        whiteBackground: Math.random() > 0.1,
+        goodLighting: Math.random() > 0.1
       }
       setImageAnalysis(analysis)
       setAnalyzingImage(false)
@@ -166,18 +166,44 @@ const StudentInfoPage = () => {
     return hasBirthData && hasImage && hasValidImageAnalysis
   }
 
-  const handleSubmit = () => {
-    if (!isFormValid()) {
-      return
-    }
+  const handleSubmit = async() => {
+      if (!isFormValid() || !selectedImage) {
+          alert("❌ Please select an image and ensure analysis passed.");
+          return;
+      }
 
     setSubmitting(true)
     
-    setTimeout(() => {
-      setSubmitting(false)
-      alert('تم إرسال معلومات الطالب بنجاح!')
-      navigate('/')
-    }, 2000)
+      const formData = new FormData();
+      formData.append("birthDate", "2000-01-01");
+      formData.append("image", selectedImage);
+
+      try {
+          const response = await fetch("https://www.alayen-student-info.site/student/7800000000", {
+              method: "PATCH",
+              headers: {
+                  Authorization: `Bearer ${accessToken}`
+              },
+              body: formData,
+          });
+
+          if (!response.ok) {
+              throw new Error(`Error ${response.status}: ${await response.text()}`);
+          }
+
+          const data = await response.json();
+          alert("✅ Uploaded successfully!")
+          console.log(data)
+      } catch (err) {
+          console.error("❌ Submission failed:", err);
+          alert("فشل إرسال المعلومات. تحقق من الاتصال أو حاول مرة أخرى.");
+      } finally {
+          setTimeout(() => {
+              setSubmitting(false)
+              alert('تم إرسال معلومات الطالب بنجاح!')
+              navigate('/')
+          }, 2000)
+      }
   }
 
   const renderAnalysisItem = (
