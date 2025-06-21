@@ -66,10 +66,11 @@ const StudentInfoPage = () => {
                 if (!response.ok) throw new Error('Fetch failed')
 
                 const data = await response.json()
+                console.log("$data.name")
 
                 const mockData: StudentData = {
-                    name: data.studentName,
-                    examCode: data.examCode,
+                    name: studentName,
+                    examCode: examCode,
                     collegeDepartment: data.section,
                     studyType: data.studyType,
                     // Simulate some students having existing data
