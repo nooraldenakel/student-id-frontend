@@ -53,42 +53,53 @@ const StudentInfoPage = () => {
         const fetchStudentInfo = async () => {
             setFetchingInfo(true)
 
-            const url = `/student/search?query=${examCode}`
-
             try {
-                const response = await fetch(url, {
+                const response = await fetch(`/student/search?query=${examCode}`, {
                     method: "GET",
                     headers: {
                         'Authorization': `Bearer ${accessToken}`
                     }
-                })
-                if (!response.ok) throw new Error('Fetch failed')
+                });
 
-                const data = await response.json()
+                if (!response.ok) {
+                    throw new Error('Failed to fetch student data');
+                }
 
+                const data = await response.json();
+
+                // Set preview image and birth date directly
+                if (data.birthDate) setBirthDate(data.birthDate);
+                if (data.imageUrl) setImagePreview(data.imageUrl);
+
+                // Build final studentData
                 const mockData: StudentData = {
                     name: studentName || "غير معروف",
                     examCode: examCode,
                     collegeDepartment: data.section || "غير محدد",
                     studyType: data.studyType || "غير محدد",
-                    birthYear: data.birthDate,
-                    birthDate: data.birthDate,
-                    imageUrl: data.imageUrl
-                }
+                    birthYear: data.birthDate || undefined,
+                    birthDate: data.birthDate || undefined,
+                    imageUrl: data.imageUrl || undefined,
+                    imageAnalysis: {
+                        headPosition: true,
+                        eyesOpen: true,
+                        glasses: true,
+                        whiteBackground: true,
+                        goodLighting: true
+                    }
+                };
 
-                setStudentData(mockData)
-
-                // ✅ Use the raw API `data`, not the state `studentData`
-                if (data.birthDate) setBirthDate(data.birthDate)
-                if (data.imageUrl) setImagePreview(data.imageUrl)
+                setStudentData(mockData);
 
             } catch (err) {
-                console.error('❌ Error loading student info:', err)
+                console.error("❌ Error fetching student info:", err);
+                setStudentData(null); // So we show the error screen
             } finally {
-                setLoading(false)
-                setFetchingInfo(false)
+                setLoading(false);
+                setFetchingInfo(false);
             }
-        }
+        };
+
 
         fetchStudentInfo()
     }, [studentName, examCode, navigate])
