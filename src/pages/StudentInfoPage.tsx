@@ -46,12 +46,13 @@ const StudentInfoPage = () => {
     const [fetchingInfo, setFetchingInfo] = useState(false)
     useEffect(() => {
         if (!accessToken || !examCode) {
-            navigate('/')
+            navigate('/');
             return;
         }
 
         const fetchStudentInfo = async () => {
-            setFetchingInfo(true)
+            setLoading(true);
+            setFetchingInfo(true);
 
             try {
                 const response = await fetch(`/student/search?query=${examCode}`, {
@@ -62,24 +63,28 @@ const StudentInfoPage = () => {
                 });
 
                 if (!response.ok) {
-                    throw new Error('Failed to fetch student data');
+                    throw new Error('Fetch failed');
                 }
 
                 const data = await response.json();
+                console.log('📦 API data:', data);
+                // Handle optional fields safely
+                const birthYear = data.birthDate ? new Date(data.birthDate).getFullYear().toString() : undefined;
+                const birthDate = data.birthDate || undefined;
+                const imageUrl = data.imageUrl || undefined;
 
-                // Set preview image and birth date directly
-                if (data.birthDate) setBirthDate(data.birthDate);
-                if (data.imageUrl) setImagePreview(data.imageUrl);
+                // Set state directly (not from state that hasn't updated yet!)
+                if (birthDate) setBirthDate(birthDate);
+                if (imageUrl) setImagePreview(imageUrl);
 
-                // Build final studentData
-                const mockData: StudentData = {
-                    name: studentName || "غير معروف",
+                setStudentData({
+                    name: studentName || 'غير معروف',
                     examCode: examCode,
-                    collegeDepartment: data.section || "غير محدد",
-                    studyType: data.studyType || "غير محدد",
-                    birthYear: data.birthDate || undefined,
-                    birthDate: data.birthDate || undefined,
-                    imageUrl: data.imageUrl || undefined,
+                    collegeDepartment: data.section || 'غير محدد',
+                    studyType: data.studyType || 'غير محدد',
+                    birthYear,
+                    birthDate,
+                    imageUrl,
                     imageAnalysis: {
                         headPosition: true,
                         eyesOpen: true,
@@ -87,22 +92,21 @@ const StudentInfoPage = () => {
                         whiteBackground: true,
                         goodLighting: true
                     }
-                };
+                });
 
-                setStudentData(mockData);
-
-            } catch (err) {
-                console.error("❌ Error fetching student info:", err);
-                setStudentData(null); // So we show the error screen
+            } catch (error) {
+                console.error('❌ Error loading student info:', error);
+                setStudentData(null); // So UI shows "خطأ في تحميل بيانات الطالب"
             } finally {
-                setLoading(false);
+                setLoading(false); // ✅ Always end loading
                 setFetchingInfo(false);
             }
         };
 
 
+
         fetchStudentInfo()
-    }, [studentName, examCode, navigate])
+    }, [])
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
@@ -218,26 +222,25 @@ const StudentInfoPage = () => {
     </motion.div>
   )
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">جاري تحميل بيانات الطالب...</p>
-        </div>
-      </div>
-    )
-  }
-
-  //if (!studentData) {
-  //  return (
-  //    <div className="min-h-screen flex items-center justify-center">
-  //      <div className="text-center">
-  //        <p className="text-red-600">خطأ في تحميل بيانات الطالب</p>
-  //      </div>
-  //    </div>
-  //  )
-  //}
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="text-center">
+                    <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                    <p className="text-gray-600">جاري تحميل بيانات الطالب...</p>
+                </div>
+            </div>
+        );
+    }
+    if (!studentData) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="text-center">
+                    <p className="text-red-600">خطأ في تحميل بيانات الطالب</p>
+                </div>
+            </div>
+        );
+    }
 
   return (
     <div className="min-h-screen p-4 relative overflow-hidden">
