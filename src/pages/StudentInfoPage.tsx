@@ -112,7 +112,8 @@ const StudentInfoPage = () => {
                 }
             }
         
-        setLoading(false)
+            setLoading(false)
+            fetchingInfo()
       }, 1000)
     }
 
