@@ -69,9 +69,9 @@ const StudentInfoPage = () => {
                 const data = await response.json();
                 console.log('📦 API data:', data);
                 // Handle optional fields safely
-                const birthYear = data.birthDate ? new Date(data.birthDate).getFullYear().toString() : undefined;
-                const birthDate = data.birthDate || undefined;
-                const imageUrl = data.imageUrl || undefined;
+                const birthYear = data.birthDate ? new Date(data.birthDate).getFullYear().toString() : "---";
+                const birthDate = data.birthDate || "---";;
+                const imageUrl = data.imageUrl || "---";;
 
                 // Set state directly (not from state that hasn't updated yet!)
                 if (birthDate) setBirthDate(birthDate);
@@ -79,19 +79,12 @@ const StudentInfoPage = () => {
 
                 setStudentData({
                     name: studentName || 'غير معروف',
-                    examCode: examCode,
+                    examCode: examCode || 0,
                     collegeDepartment: data.section || 'غير محدد',
                     studyType: data.studyType || 'غير محدد',
                     birthYear,
                     birthDate,
-                    imageUrl,
-                    imageAnalysis: {
-                        headPosition: true,
-                        eyesOpen: true,
-                        glasses: true,
-                        whiteBackground: true,
-                        goodLighting: true
-                    }
+                    imageUrl
                 });
 
             } catch (error) {
