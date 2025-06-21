@@ -51,7 +51,6 @@ const StudentInfoPage = () => {
         }
 
         const fetchStudentInfo = async () => {
-            ;
             setFetchingInfo(true)
 
             const url = `/student/search?query=${examCode}`
@@ -66,43 +65,29 @@ const StudentInfoPage = () => {
                 if (!response.ok) throw new Error('Fetch failed')
 
                 const data = await response.json()
-                console.log("$data.name")
 
                 const mockData: StudentData = {
-                    name: studentName,
+                    name: studentName || "غير معروف",
                     examCode: examCode,
-                    collegeDepartment: data.section,
-                    studyType: data.studyType,
-                    // Simulate some students having existing data
-                    birthYear: Math.random() > 0.5 ? data.birthDate : undefined,
-                    birthDate: Math.random() > 0.5 ? data.birthDate : undefined,
-                    imageUrl: Math.random() > 0.5 ? data.imageUrl : undefined,
-                    imageAnalysis: Math.random() > 0.5 ? {
-                        headPosition: true,
-                        eyesOpen: true,
-                        glasses: true,
-                        whiteBackground: true,
-                        goodLighting: true
-                    } : undefined
+                    collegeDepartment: data.section || "غير محدد",
+                    studyType: data.studyType || "غير محدد",
+                    birthYear: data.birthDate,
+                    birthDate: data.birthDate,
+                    imageUrl: data.imageUrl
                 }
 
                 setStudentData(mockData)
 
-                if (data.birthYear) {
-                    setBirthDate(studentData?.birthYear ? studentData?.birthYear : '---')
-                }
-                if (data.imageUrl) {
-                    setImagePreview(studentData?.imageUrl ? studentData?.imageUrl : '---')
-                }
-
-                
+                // ✅ Use the raw API `data`, not the state `studentData`
+                if (data.birthDate) setBirthDate(data.birthDate)
+                if (data.imageUrl) setImagePreview(data.imageUrl)
 
             } catch (err) {
                 console.error('❌ Error loading student info:', err)
             } finally {
+                setLoading(false)
                 setFetchingInfo(false)
             }
-            setLoading(false)
         }
 
         fetchStudentInfo()
