@@ -82,12 +82,12 @@ const LoginPage = () => {
               localStorage.setItem("studentName", formData.name.trim());
               localStorage.setItem("examCode", formData.examCode);
               navigate('/student-info', {
-                  state: {
-                      accessToken,
-                      refreshToken,
-                      studentName: formData.name.trim(),
-                      examCode: formData.examCode
-                           }
+                  //state: {
+                  //    accessToken,
+                  //    refreshToken,
+                  //    studentName: formData.name.trim(),
+                  //    examCode: formData.examCode
+                  //         }
               })
           } else {
               throw new Error('Missing token in response ❌')
