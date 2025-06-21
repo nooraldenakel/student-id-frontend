@@ -183,7 +183,7 @@ const StudentInfoPage = () => {
         formData.append("image", selectedImage);
 
         try {
-            const response = await fetch("https://www.alayen-student-info.site/student/7800000000", {
+            const response = await fetch(`/student/${examCode}`, {
                 method: "PATCH",
                 headers: {
                     Authorization: `Bearer ${accessToken}`
