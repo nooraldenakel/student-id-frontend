@@ -166,45 +166,41 @@ const StudentInfoPage = () => {
     return hasBirthData && hasImage && hasValidImageAnalysis
   }
 
-  const handleSubmit = async() => {
-      if (!isFormValid() || !selectedImage) {
-          alert("❌ Please select an image and ensure analysis passed.");
-          return;
-      }
+    const handleSubmit = async () => {
+        if (!isFormValid() || !selectedImage) {
+            alert("❌ Please select an image and ensure analysis passed.");
+            return;
+        }
 
-    setSubmitting(true)
-    
-      const formData = new FormData();
-      formData.append("birthDate", "2000-01-01");
-      formData.append("image", selectedImage);
+        setSubmitting(true);
 
-      try {
-          const response = await fetch("https://www.alayen-student-info.site/student/7800000000", {
-              method: "PATCH",
-              headers: {
-                  Authorization: `Bearer ${accessToken}`
-              },
-              body: formData,
-          });
+        const formData = new FormData();
+        formData.append("birthDate", "2000-01-01");
+        formData.append("image", selectedImage);
 
-          if (!response.ok) {
-              throw new Error(`Error ${response.status}: ${await response.text()}`);
-          }
+        try {
+            const response = await fetch("https://www.alayen-student-info.site/student/7800000000", {
+                method: "PATCH",
+                headers: {
+                    Authorization: `Bearer ${accessToken}`
+                },
+                body: formData,
+            });
 
-          const data = await response.json();
-          alert("✅ Uploaded successfully!")
-          console.log(data)
-      } catch (err) {
-          console.error("❌ Submission failed:", err);
-          alert("فشل إرسال المعلومات. تحقق من الاتصال أو حاول مرة أخرى.");
-      } finally {
-          setTimeout(() => {
-              setSubmitting(false)
-              alert('تم إرسال معلومات الطالب بنجاح!')
-              navigate('/')
-          }, 2000)
-      }
-  }
+            if (!response.ok) {
+                throw new Error(`Error ${response.status}: ${await response.text()}`);
+            }
+
+            const data = await response.json();
+            alert("✅ Uploaded successfully!")
+            console.log(data)
+        } catch (err) {
+            console.error("❌ Submission failed:", err);
+            alert("فشل إرسال المعلومات. تحقق من الاتصال أو حاول مرة أخرى.");
+        } finally {
+            setSubmitting(false);
+        }
+    };
 
   const renderAnalysisItem = (
     label: string,
