@@ -70,8 +70,8 @@ const StudentInfoPage = () => {
                 console.log('📦 API data:', data);
                 // Handle optional fields safely
                 const birthYear = data.birthDate ? new Date(data.birthDate).getFullYear().toString() : "---";
-                const birthDate = data.birthDate || "---";;
-                const imageUrl = data.imageUrl || "---";;
+                const birthDate = data.birthDate || undefined;
+                const imageUrl = data.imageUrl || undefined;
 
                 // Set state directly (not from state that hasn't updated yet!)
                 if (birthDate) setBirthDate(birthDate);
