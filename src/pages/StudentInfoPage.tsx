@@ -179,7 +179,7 @@ const StudentInfoPage = () => {
         setSubmitting(true);
 
         const formData = new FormData();
-        formData.append("birthDate", "2000-01-01");
+        formData.append("birthDate", birthYear);
         formData.append("image", selectedImage);
 
         try {
