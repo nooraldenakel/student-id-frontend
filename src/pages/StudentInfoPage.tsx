@@ -200,8 +200,7 @@ const StudentInfoPage = () => {
             }
 
             const data = await response.json();
-            alert("✅ Uploaded successfully!")
-            console.log(data)
+            alert("✅ Uploaded successfully!");
         } catch (err) {
             console.error("❌ Submission failed:", err);
             alert("فشل إرسال المعلومات. تحقق من الاتصال أو حاول مرة أخرى.");

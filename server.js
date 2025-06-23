@@ -82,7 +82,7 @@ const commonProxy = createProxyMiddleware({
     }
 });
 
-//app.use("/", commonProxy);
+app.use("/", commonProxy);
 app.use("/api", commonProxy);
 app.use("/student", commonProxy)
 
@@ -90,9 +90,9 @@ app.get('*', (req, res) => {
     res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
 });
 
-//app.get("*", (req, res) => {
-//    res.sendFile(path.join(__dirname, "dist/index.html"));
-//});
+app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "dist/index.html"));
+});
 
 app.listen(PORT, () => {
     console.log(`✅ Frontend server running at http://localhost:${PORT}`);
