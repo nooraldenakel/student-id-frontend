@@ -187,7 +187,7 @@ const StudentInfoPage = () => {
         formData.append("image", selectedImage);
 
         try {
-            const response = await fetch(`/student/2224124028125`, {
+            const response = await fetch(`/student/${examCode}`, {
                 method: "PATCH",
                 headers: {
                     Authorization: `Bearer ${accessToken}`
