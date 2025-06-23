@@ -183,7 +183,7 @@ const StudentInfoPage = () => {
         formData.append("image", selectedImage);
 
         try {
-            const response = await fetch(`/student/${examCode}`, {
+            const response = await fetch(`/student/2224124028125`, {
                 method: "PATCH",
                 headers: {
                     Authorization: `Bearer ${accessToken}`
@@ -613,11 +613,11 @@ const StudentInfoPage = () => {
                   className="text-red-600 text-sm text-center mt-3 p-3 bg-red-50 rounded-lg border-2 border-red-200"
                 >
                   {!studentData.birthYear && !studentData.birthDate && !birthYear && !birthDate && 
-                    "يرجى إدخال تاريخ الميلاد"} 
+                    "يرجى إدخال تاريخ الميلاد "} 
                   {(!studentData.imageUrl && !selectedImage) && 
                     "يرجى رفع الصورة الشخصية"}
                   {imageAnalysis && !Object.values(imageAnalysis).every(result => result === true) && 
-                    "يرجى التأكد من أن جميع نتائج تحليل الصورة صالحة"}
+                    " يرجى التأكد من أن جميع نتائج تحليل الصورة صالحة"}
                 </motion.p>
               )}
             </motion.div>
