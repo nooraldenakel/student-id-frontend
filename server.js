@@ -83,36 +83,8 @@ const commonProxy = createProxyMiddleware({
 
 app.use("/", commonProxy);
 app.use("/api", commonProxy);
-app.use("/student", commonProxy)
+app.use("/student", commonProxy);
 
-
-//app.use(
-//    "/api",
-//    createProxyMiddleware({
-//        target: "https://student-id-info-back-production.up.railway.app",
-//        changeOrigin: true,
-//        pathRewrite: { "^/api": "/api" } // 🔁 DO NOT STRIP /api
-//    })
-//);
-
-//app.use(
-//    "/student",
-//    createProxyMiddleware({
-//        target: "https://student-id-info-back-production.up.railway.app",
-//        changeOrigin: true,
-//        selfHandleResponse: false,
-//        onProxyReq: (proxyReq, req, res) => {
-//            const auth = req.headers['authorization'];
-//            if (auth) {
-//                proxyReq.setHeader('Authorization', auth);
-//            }
-//        }
-//    })
-//);
-
-
-
-// Handle SPA routing
 
 
 app.use(express.static(path.join(__dirname, "dist")));
@@ -121,9 +93,9 @@ app.get('*', (req, res) => {
     res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
 });
 
-app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "dist/index.html"));
-});
+//app.get("*", (req, res) => {
+//    res.sendFile(path.join(__dirname, "dist/index.html"));
+//});
 
 app.listen(PORT, () => {
     console.log(`✅ Frontend server running at http://localhost:${PORT}`);
