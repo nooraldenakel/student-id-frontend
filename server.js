@@ -78,14 +78,11 @@ const commonProxy = createProxyMiddleware({
         const auth = req.headers['authorization'];
         if (auth) {
             proxyReq.setHeader('Authorization', auth);
-        }
-        res.status().json({
-            message: `✅ Student with ID: ${examCode} updated successfully`
-        })
+        };
     }
 });
 
-app.use("/", commonProxy);
+//app.use("/", commonProxy);
 app.use("/api", commonProxy);
 app.use("/student", commonProxy)
 
