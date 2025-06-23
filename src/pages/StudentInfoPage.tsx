@@ -63,23 +63,23 @@ const StudentInfoPage = () => {
                 });
 
                 if (!response.ok) {
+                    console.log("❌ Response not OK:", response.status);
                     throw new Error('Fetch failed');
                 }
 
                 const data = await response.json();
-
+                console.log("Fetched student data:", data);
                 // Handle optional fields safely
                 const birthYear = data.birthDate ? new Date(data.birthDate).getFullYear().toString() : undefined;
                 const birthDate = data.birthDate || undefined;
                 const imageUrl = data.imageUrl || undefined;
-
                 // Set state directly (not from state that hasn't updated yet!)
                 if (birthDate) setBirthDate(birthDate);
                 if (imageUrl) setImagePreview(imageUrl);
 
                 setStudentData({
-                    name: studentName || 'غير معروف',
-                    examCode: examCode,
+                    name: studentName || data.name || 'غير معروف',
+                    examCode,
                     collegeDepartment: data.section || 'غير محدد',
                     studyType: data.studyType || 'غير محدد',
                     birthYear,
@@ -241,25 +241,25 @@ const StudentInfoPage = () => {
     </motion.div>
   )
 
-    //if (loading) {
-    //    return (
-    //        <div className="min-h-screen flex items-center justify-center">
-    //            <div className="text-center">
-    //                <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-    //                <p className="text-gray-600">جاري تحميل بيانات الطالب...</p>
-    //            </div>
-    //        </div>
-    //    );
-    //}
-    //if (!studentData) {
-    //    return (
-    //        <div className="min-h-screen flex items-center justify-center">
-    //            <div className="text-center">
-    //                <p className="text-red-600">خطأ في تحميل بيانات الطالب</p>
-    //            </div>
-    //        </div>
-    //    );
-    //}
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="text-center">
+                    <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                    <p className="text-gray-600">جاري تحميل بيانات الطالب...</p>
+                </div>
+            </div>
+        );
+    }
+    if (!studentData) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="text-center">
+                    <p className="text-red-600">خطأ في تحميل بيانات الطالب</p>
+                </div>
+            </div>
+        );
+    }
 
   return (
     <div className="min-h-screen p-4 relative overflow-hidden">
