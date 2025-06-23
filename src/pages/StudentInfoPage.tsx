@@ -241,25 +241,25 @@ const StudentInfoPage = () => {
     </motion.div>
   )
 
-    if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="text-center">
-                    <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                    <p className="text-gray-600">جاري تحميل بيانات الطالب...</p>
-                </div>
-            </div>
-        );
-    }
-    if (!studentData) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="text-center">
-                    <p className="text-red-600">خطأ في تحميل بيانات الطالب</p>
-                </div>
-            </div>
-        );
-    }
+    //if (loading) {
+    //    return (
+    //        <div className="min-h-screen flex items-center justify-center">
+    //            <div className="text-center">
+    //                <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+    //                <p className="text-gray-600">جاري تحميل بيانات الطالب...</p>
+    //            </div>
+    //        </div>
+    //    );
+    //}
+    //if (!studentData) {
+    //    return (
+    //        <div className="min-h-screen flex items-center justify-center">
+    //            <div className="text-center">
+    //                <p className="text-red-600">خطأ في تحميل بيانات الطالب</p>
+    //            </div>
+    //        </div>
+    //    );
+    //}
 
   return (
     <div className="min-h-screen p-4 relative overflow-hidden">
