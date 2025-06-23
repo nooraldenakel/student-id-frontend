@@ -76,36 +76,54 @@ app.get('*', (req, res) => {
 });
 
 // ✅ Correct proxy setup
-app.use(
-    "/",
-    createProxyMiddleware({
-        target: "https://student-id-info-back-production.up.railway.app", // 🔁 use backend's real Railway URL
-        changeOrigin: true,
-    })
-);
-app.use(
-    "/api",
-    createProxyMiddleware({
-        target: "https://student-id-info-back-production.up.railway.app",
-        changeOrigin: true,
-        pathRewrite: { "^/api": "/api" } // 🔁 DO NOT STRIP /api
-    })
-);
+//app.use(
+//    "/",
+//    createProxyMiddleware({
+//        target: "https://student-id-info-back-production.up.railway.app", // 🔁 use backend's real Railway URL
+//        changeOrigin: true,
+//    })
+//)
 
-app.use(
-    "/student",
-    createProxyMiddleware({
-        target: "https://student-id-info-back-production.up.railway.app",
-        changeOrigin: true,
-        selfHandleResponse: false,
-        onProxyReq: (proxyReq, req, res) => {
-            const auth = req.headers['authorization'];
-            if (auth) {
-                proxyReq.setHeader('Authorization', auth);
-            }
+const commonProxy = createProxyMiddleware({
+    target: "https://student-id-info-back-production.up.railway.app",
+    changeOrigin: true,
+    selfHandleResponse: false,
+    onProxyReq: (proxyReq, req, res) => {
+        const auth = req.headers['authorization'];
+        if (auth) {
+            proxyReq.setHeader('Authorization', auth);
         }
-    })
-);
+    }
+});
+
+app.use("/", commonProxy);
+app.use("/api", commonProxy);
+app.use("/student", commonProxy)
+
+
+//app.use(
+//    "/api",
+//    createProxyMiddleware({
+//        target: "https://student-id-info-back-production.up.railway.app",
+//        changeOrigin: true,
+//        pathRewrite: { "^/api": "/api" } // 🔁 DO NOT STRIP /api
+//    })
+//);
+
+//app.use(
+//    "/student",
+//    createProxyMiddleware({
+//        target: "https://student-id-info-back-production.up.railway.app",
+//        changeOrigin: true,
+//        selfHandleResponse: false,
+//        onProxyReq: (proxyReq, req, res) => {
+//            const auth = req.headers['authorization'];
+//            if (auth) {
+//                proxyReq.setHeader('Authorization', auth);
+//            }
+//        }
+//    })
+//);
 
 
 
