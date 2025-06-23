@@ -15,6 +15,8 @@ const PORT = process.env.PORT || 3000;
 const storage = multer.memoryStorage(); // or use diskStorage() to save to folder
 const upload = multer({ storage });
 
+app.use(express.static(path.join(__dirname, "dist")));
+
 //app.use(cors({
 //    origin: "https://www.alayen-student-info.site",
 //    credentials: true,
@@ -97,7 +99,7 @@ const commonProxy = createProxyMiddleware({
 app.use("/api", commonProxy);
 app.use("/student", commonProxy);
 
-app.use(express.static(path.join(__dirname, "dist")));
+
 
 // Handle SPA routing
 //app.get('*', (req, res) => {
