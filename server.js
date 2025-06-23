@@ -15,6 +15,12 @@ const PORT = process.env.PORT || 3000;
 const storage = multer.memoryStorage(); // or use diskStorage() to save to folder
 const upload = multer({ storage });
 
+
+app.use('/', createProxyMiddleware({
+    target: 'https://student-id-info-back-production.up.railway.app',
+    changeOrigin: true,
+}));
+
 app.use('/api', createProxyMiddleware({
     target: 'https://student-id-info-back-production.up.railway.app',
     changeOrigin: true,
