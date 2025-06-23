@@ -82,9 +82,12 @@ const commonProxy = createProxyMiddleware({
     }
 });
 
-app.use("/", commonProxy);
+//app.use("/", commonProxy);
+app.use("/root", commonProxy)
 app.use("/api", commonProxy);
+app.use("/admin", commonProxy);
 app.use("/student", commonProxy)
+
 
 app.get('*', (req, res) => {
     res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
