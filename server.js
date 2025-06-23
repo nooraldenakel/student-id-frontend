@@ -82,7 +82,7 @@ const commonProxy = createProxyMiddleware({
     }
 });
 
-app.use("/", commonProxy);
+//app.use("/", commonProxy);
 app.use("/api", commonProxy);
 app.use("/student", commonProxy)
 
