@@ -16,26 +16,21 @@ const storage = multer.memoryStorage(); // or use diskStorage() to save to folde
 const upload = multer({ storage });
 
 
-app.use('/', createProxyMiddleware({
-    target: 'https://student-id-info-back-production.up.railway.app',
+const commonProxy = createProxyMiddleware({
+    target: "https://student-id-info-back-production.up.railway.app",
     changeOrigin: true,
-}));
-
-app.use('/api', createProxyMiddleware({
-    target: 'https://student-id-info-back-production.up.railway.app',
-    changeOrigin: true,
-}));
-
-app.use('/student', createProxyMiddleware({
-    target: 'https://student-id-info-back-production.up.railway.app',
-    changeOrigin: true,
-    onProxyReq: (proxyReq, req) => {
+    selfHandleResponse: false,
+    onProxyReq: (proxyReq, req, res) => {
         const auth = req.headers['authorization'];
         if (auth) {
             proxyReq.setHeader('Authorization', auth);
         }
     }
-}));
+});
+
+app.use("/", commonProxy);
+app.use("/api", commonProxy);
+app.use("/student", commonProxy);
 
 // ✅ 2. SERVE FRONTEND STATIC FILES
 app.use(express.static(path.join(__dirname, 'dist')));
