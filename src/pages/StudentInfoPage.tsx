@@ -204,18 +204,15 @@ const StudentInfoPage = () => {
           // ✅ SAFELY HANDLE JSON PARSING
           const text = await response.text(); // Add this!
           console.log("📄 Raw response text:", text);
-
-          alert("✅ Uploaded successfully!");
           setShowSuccessModal(true);
 
       } catch (err) {
           console.error("❌ Submission failed:", err);
-          alert("فشل إرسال المعلومات. تحقق من الاتصال أو حاول مرة أخرى.");
       } finally {
             setSubmitting(false);
         }
     };
-    const handleSuccessModalClose = () => {
+  const handleSuccessModalClose = () => {
         setShowSuccessModal(false);
 
         if (!studentData) return;
@@ -622,7 +619,7 @@ const StudentInfoPage = () => {
                                 </h3>
 
                                 <p className="text-gray-600 mb-6 leading-relaxed">
-                                    تم حفظ معلوماتك بنجاح في النظام. سيتم مراجعة طلبك والتواصل معك قريباً.
+                                    تم حفظ معلوماتك بنجاح ✔️.
                                 </p>
 
                                 <div className="space-y-3">
