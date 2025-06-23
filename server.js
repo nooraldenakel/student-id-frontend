@@ -18,6 +18,9 @@ const upload = multer({ storage });
 app.use('/api', createProxyMiddleware({
     target: 'https://student-id-info-back-production.up.railway.app',
     changeOrigin: true,
+    pathRewrite: {
+        '^/api': '/api' // optional, but can force correct routing
+    }
 }));
 
 app.use('/student', createProxyMiddleware({
@@ -30,6 +33,11 @@ app.use('/student', createProxyMiddleware({
         }
     }
 }));
+
+app.use((req, res, next) => {
+    console.log(`🔹 Incoming: ${req.method} ${req.url}`);
+    next();
+});
 
 // ✅ 2. SERVE REACT FRONTEND (built in dist/)
 app.use(express.static(path.join(__dirname, 'dist')));
