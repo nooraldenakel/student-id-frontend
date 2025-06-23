@@ -79,6 +79,9 @@ const commonProxy = createProxyMiddleware({
         if (auth) {
             proxyReq.setHeader('Authorization', auth);
         }
+        res.status().json({
+            message: `✅ Student with ID: ${examCode} updated successfully`
+        })
     }
 });
 

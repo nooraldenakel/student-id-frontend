@@ -187,25 +187,31 @@ const StudentInfoPage = () => {
         formData.append("birthDate", birthYear);
         formData.append("image", selectedImage);
 
-        try {
-            const response = await fetch(`/student/${examCode}`, {
-                method: "PATCH",
-                headers: {
-                    Authorization: `Bearer ${accessToken}`
-                },
-                body: formData,
-            });
+      try {
+          const response = await fetch(`/student/${examCode}`, {
+              method: "PATCH",
+              headers: {
+                  Authorization: `Bearer ${accessToken}`
+              },
+              body: formData,
+          });
 
-            if (!response.ok) {
-                throw new Error(`Error ${response.status}: ${await response.text()}`);
-            }
+          if (!response.ok) {
+              const errorText = await response.text(); // log for debugging
+              throw new Error(`Error ${response.status}: ${errorText}`);
+          }
 
-            const data = await response.json();
-            setShowSuccessModal(true);
-        } catch (err) {
-            console.error("❌ Submission failed:", err);
-            alert("فشل إرسال المعلومات. تحقق من الاتصال أو حاول مرة أخرى.");
-        } finally {
+          // ✅ SAFELY HANDLE JSON PARSING
+          const text = await response.text(); // Add this!
+          console.log("📄 Raw response text:", text);
+
+          alert("✅ Uploaded successfully!");
+          setShowSuccessModal(true);
+
+      } catch (err) {
+          console.error("❌ Submission failed:", err);
+          alert("فشل إرسال المعلومات. تحقق من الاتصال أو حاول مرة أخرى.");
+      } finally {
             setSubmitting(false);
         }
     };
