@@ -69,6 +69,19 @@ const upload = multer({ storage });
 
 // Serve frontend build
 
+
+
+
+
+// ✅ Correct proxy setup
+app.use(
+    "/",
+    createProxyMiddleware({
+        target: "https://student-id-info-back-production.up.railway.app", // 🔁 use backend's real Railway URL
+        changeOrigin: true,
+    })
+)
+
 const commonProxy = createProxyMiddleware({
     target: "https://student-id-info-back-production.up.railway.app",
     changeOrigin: true,
@@ -81,21 +94,19 @@ const commonProxy = createProxyMiddleware({
     }
 });
 
-app.use("/", commonProxy);
 app.use("/api", commonProxy);
 app.use("/student", commonProxy);
 
-
-
 app.use(express.static(path.join(__dirname, "dist")));
 
+// Handle SPA routing
 app.get('*', (req, res) => {
     res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
 });
 
-//app.get("*", (req, res) => {
-//    res.sendFile(path.join(__dirname, "dist/index.html"));
-//});
+app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "dist/index.html"));
+});
 
 app.listen(PORT, () => {
     console.log(`✅ Frontend server running at http://localhost:${PORT}`);
