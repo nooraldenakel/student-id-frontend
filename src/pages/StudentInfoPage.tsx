@@ -46,6 +46,7 @@ const StudentInfoPage = () => {
   const [fetchingInfo, setFetchingInfo] = useState(false)
   const isDataComplete = studentData?.birthYear && studentData?.imageUrl
   const hasExistingImage = studentData?.imageUrl && !selectedImage
+  const [showSuccessModal, setShowSuccessModal] = useState(false)
 
 
   useEffect(() => {
@@ -200,13 +201,37 @@ const StudentInfoPage = () => {
             }
 
             const data = await response.json();
-            alert("✅ Uploaded successfully!");
+            setShowSuccessModal(true);
         } catch (err) {
             console.error("❌ Submission failed:", err);
             alert("فشل إرسال المعلومات. تحقق من الاتصال أو حاول مرة أخرى.");
         } finally {
             setSubmitting(false);
         }
+    };
+    const handleSuccessModalClose = () => {
+        setShowSuccessModal(false);
+
+        if (!studentData) return;
+
+        const updatedData: StudentData = {
+            ...studentData,
+            birthYear: birthYear || studentData.birthYear,
+            imageUrl: imagePreview || studentData.imageUrl,
+            imageAnalysis: imageAnalysis || studentData.imageAnalysis
+        };
+
+        setStudentData(updatedData);
+        setSelectedImage(null);
+
+        // Optionally refresh page state
+        navigate('/student-info', {
+            state: {
+                studentName: updatedData.name,
+                examCode: updatedData.examCode
+            },
+            replace: true
+        });
     };
 
   const renderAnalysisItem = (
@@ -565,6 +590,64 @@ const StudentInfoPage = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Success Modal */}
+            <AnimatePresence>
+                {showSuccessModal && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+                    >
+                        <motion.div
+                            initial={{ scale: 0.8, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.8, opacity: 0 }}
+                            className="bg-white rounded-2xl p-8 max-w-md w-full mx-auto shadow-2xl border-2 border-green-200"
+                        >
+                            <div className="text-center">
+                                <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <CheckCircle2 className="w-8 h-8 text-white" />
+                                </div>
+
+                                <h3 className="text-2xl font-bold text-gray-800 mb-2">
+                                    تم الإرسال بنجاح!
+                                </h3>
+
+                                <p className="text-gray-600 mb-6 leading-relaxed">
+                                    تم حفظ معلوماتك بنجاح في النظام. سيتم مراجعة طلبك والتواصل معك قريباً.
+                                </p>
+
+                                <div className="space-y-3">
+                                    <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-200">
+                                        <span className="text-green-700 font-medium">الاسم</span>
+                                        <span className="text-green-800 font-bold">{studentData.name}</span>
+                                    </div>
+
+                                    <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-200">
+                                        <span className="text-green-700 font-medium">الرقم الامتحاني</span>
+                                        <span className="text-green-800 font-bold">{studentData.examCode}</span>
+                                    </div>
+
+                                    <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-200">
+                                        <span className="text-green-700 font-medium">سنة الميلاد</span>
+                                        <span className="text-green-800 font-bold">{birthYear || studentData.birthYear}</span>
+                                    </div>
+                                </div>
+
+                                <button
+                                    onClick={handleSuccessModalClose}
+                                    className="btn-primary w-full mt-6 py-3 flex items-center justify-center space-x-2 space-x-reverse"
+                                >
+                                    <span>موافق</span>
+                                    <Check className="w-5 h-5" />
+                                </button>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     )
 }
