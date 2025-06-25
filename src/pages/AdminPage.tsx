@@ -24,7 +24,7 @@ const AdminPage = () => {
     // Admin credentials (in real app, this would be handled by backend)
     const ADMIN_CREDENTIALS = {
         username: 'admin',
-        password: 'admin123'
+        password: 'se_n00rALDENakel'
     }
 
     const [filters, setFilters] = useState<StudentFilters>({
@@ -91,13 +91,13 @@ const AdminPage = () => {
     useEffect(() => {
         const fetchStudents = async () => {
             try {
-                const url = 'https://student-id-info-back-production.up.railway.app/student/?sort=time_desc&pageSize=100'
+                const url = `https://student-id-info-back-production.up.railway.app/student/?sort=time_desc&pageSize=${studentsPerPage}&page=${currentPage}`;
                 const response = await fetch(url, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
                     }
-                })
+                });
                 if (!response.ok) throw new Error(`Error: ${response.status}`);
                 const data = await response.json();
                 setStudents(data);
@@ -105,8 +105,10 @@ const AdminPage = () => {
                 console.error('❌ Failed to fetch students:', error);
             }
         };
+
         fetchStudents();
-    }, []);
+    }, [currentPage, studentsPerPage]);
+
     // Filter and sort students
     const filteredStudents = useMemo(() => {
         let filtered = students.filter((student) => {
@@ -342,16 +344,6 @@ const AdminPage = () => {
                                 )}
                             </motion.button>
                         </form>
-
-                        <div className="mt-8 pt-6 border-t border-gray-200">
-                            <div className="text-center text-sm text-gray-500 space-y-2">
-                                <p>بيانات الدخول التجريبية:</p>
-                                <div className="bg-gray-50 p-3 rounded-lg border">
-                                    <p><strong>المستخدم:</strong> admin</p>
-                                    <p><strong>كلمة المرور:</strong> admin123</p>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </motion.div>
             </div>
