@@ -212,6 +212,7 @@ const StudentInfoPage = () => {
             setSubmitting(false);
         }
     };
+
   const handleSuccessModalClose = () => {
         setShowSuccessModal(false);
 

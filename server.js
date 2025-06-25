@@ -23,7 +23,6 @@ const commonProxy = createProxyMiddleware({
 });
 
 // ✅ Proxy only for backend API routes
-app.use("/api", commonProxy);
 app.use("/student", commonProxy);
 
 // ✅ Serve frontend static files (your Vite build)
