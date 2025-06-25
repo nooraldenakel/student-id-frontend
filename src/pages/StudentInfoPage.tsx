@@ -60,7 +60,7 @@ const StudentInfoPage = () => {
             setFetchingInfo(true);
 
             try {
-                const response = await fetch(`/student/search?query=${examCode}`, {
+                const response = await fetch(`https://student-id-info-back-production.up.railway.app/student/search?query=${examCode}`, {
                     method: "GET",
                     headers: {
                         'Authorization': `Bearer ${accessToken}`
@@ -188,7 +188,7 @@ const StudentInfoPage = () => {
         formData.append("image", selectedImage);
 
       try {
-          const response = await fetch(`/student/${examCode}`, {
+          const response = await fetch(`https://student-id-info-back-production.up.railway.app/student/${examCode}`, {
               method: "PATCH",
               headers: {
                   Authorization: `Bearer ${accessToken}`
