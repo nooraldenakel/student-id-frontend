@@ -9,15 +9,12 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// ✅ Serve frontend static files
-app.use(express.static(path.join(__dirname, "dist")));
-
-// ✅ Proxy ONLY /api and /student calls
-const proxy = createProxyMiddleware({
+// 🧠 Backend proxy
+const commonProxy = createProxyMiddleware({
     target: "https://student-id-info-back-production.up.railway.app",
     changeOrigin: true,
     selfHandleResponse: false,
-    onProxyReq: (proxyReq, req) => {
+    onProxyReq: (proxyReq, req, res) => {
         const auth = req.headers['authorization'];
         if (auth) {
             proxyReq.setHeader('Authorization', auth);
@@ -25,14 +22,19 @@ const proxy = createProxyMiddleware({
     }
 });
 
-app.use("/api", proxy);
-app.use("/student", proxy);
+// ✅ Proxy only for backend API routes
+app.use("/api", commonProxy);
+app.use("/student", commonProxy);
 
-// ✅ Handle SPA routes (important to go AFTER the proxy!)
+// ✅ Serve frontend static files (your Vite build)
+app.use(express.static(path.join(__dirname, "dist")));
+
+// ✅ Fallback to index.html for all other frontend routes (SPA support)
 app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "dist", "index.html"));
 });
 
+// Start server
 app.listen(PORT, () => {
-    console.log(`✅ Server running at http://localhost:${PORT}`);
+    console.log(`✅ Server running on http://localhost:${PORT}`);
 });
