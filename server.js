@@ -5,12 +5,14 @@ import { createProxyMiddleware } from "http-proxy-middleware";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// ✅ Proxy only /student requests
-app.use("/student", createProxyMiddleware({
+// Serve static frontend
+app.use(express.static(path.join(__dirname, "dist")));
+
+// ✅ Proxy to Ktor backend
+const backendProxy = createProxyMiddleware({
     target: "https://student-id-info-back-production.up.railway.app",
     changeOrigin: true,
     onProxyReq: (proxyReq, req) => {
@@ -19,16 +21,16 @@ app.use("/student", createProxyMiddleware({
             proxyReq.setHeader('Authorization', auth);
         }
     }
-}));
+});
 
-// ✅ Serve built frontend files
-app.use(express.static(path.join(__dirname, "dist")));
+app.use("/student", backendProxy); // ✅ needed for student/login
+app.use("/api", backendProxy);     // if using /api for anything else
 
-// ✅ Fallback for SPA routing (/admin, /student-info, etc.)
+// ✅ SPA fallback
 app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "dist", "index.html"));
 });
 
 app.listen(PORT, () => {
-    console.log(`✅ Server running on http://localhost:${PORT}`);
+    console.log(`✅ Server listening on http://localhost:${PORT}`);
 });
