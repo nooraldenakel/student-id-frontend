@@ -382,7 +382,7 @@ const StudentInfoPage = () => {
                                 <div className="flex items-center space-x-3 space-x-reverse p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border-2 border-green-300 shadow-sm">
                                     <Calendar className="w-5 h-5 text-green-600" />
                                     <div className="text-right">
-                                        <p className="text-sm text-green-600 font-medium">سنة الميلاد</p>
+                                        <p className="text-sm text-green-600 font-medium">سنة التولد</p>
                                         <p className="font-bold text-green-800 text-2xl">{studentData.birthYear}</p>
                                     </div>
                                 </div>
@@ -582,7 +582,7 @@ const StudentInfoPage = () => {
                                         className="text-red-600 text-sm text-center mt-3 p-3 bg-red-50 rounded-lg border-2 border-red-200"
                                     >
                                         {!studentData.birthYear && !birthYear &&
-                                            "يرجى إدخال سنة الميلاد"}
+                                            "يرجى إدخال سنة التولد"}
                                         {(!studentData.imageUrl && !selectedImage) &&
                                             "يرجى رفع الصورة الشخصية"}
                                         {imageAnalysis && !Object.values(imageAnalysis).every(result => result === true) &&
