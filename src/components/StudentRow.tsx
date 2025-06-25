@@ -9,7 +9,7 @@ interface StudentRowProps {
 }
 
 const StudentRow: React.FC<StudentRowProps> = ({ student, index }) => {
-  const isImageValid = Object.values(student.imageAnalysis).every(val => val)
+  //const isImageValid = Object.values(student.imageAnalysis).every(val => val)
 
   return (
     <motion.tr
@@ -34,8 +34,8 @@ const StudentRow: React.FC<StudentRowProps> = ({ student, index }) => {
           <div className="text-right">
             <p className="font-bold text-gray-800">{student.name}</p>
             <p className="text-sm text-blue-600 flex items-center space-x-1 space-x-reverse font-medium">
-              <Hash className="w-3 h-3" />
-              <span>{student.examCode}</span>
+                          <Hash className="w-3 h-3" />
+                          <span>{student.symbol}</span>
             </p>
           </div>
         </div>
@@ -64,33 +64,12 @@ const StudentRow: React.FC<StudentRowProps> = ({ student, index }) => {
       <td className="px-6 py-4 text-right border-r-2 border-gray-100">
         <div className="p-3 bg-gradient-to-r from-gray-50 to-slate-50 rounded-xl border-2 border-gray-200">
           <div className="flex items-center space-x-2 space-x-reverse mb-1">
-            <Calendar className="w-4 h-4 text-gray-600" />
-            <span className="font-bold text-gray-800">{student.submissionDate}</span>
-          </div>
-          <div className="text-gray-600 font-medium text-sm">{student.submissionTime}</div>
+                      <Calendar className="w-4 h-4 text-gray-600" />
+                      <span className="font-bold text-gray-800">{student.time}</span>
+                  </div>
+                  <div className="text-gray-600 font-medium text-sm">{student.time}</div>
         </div>
       </td>
-
-      <td className="px-6 py-4 text-center border-r-2 border-gray-100">
-        <div className={`inline-flex items-center space-x-1 space-x-reverse px-4 py-2 rounded-full text-sm font-bold border-2 ${
-          isImageValid 
-            ? 'bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 border-green-300' 
-            : 'bg-gradient-to-r from-red-50 to-rose-50 text-red-700 border-red-300'
-        }`}>
-          {isImageValid ? (
-            <>
-              <CheckCircle2 className="w-4 h-4" />
-              <span>مقبولة</span>
-            </>
-          ) : (
-            <>
-              <XCircle className="w-4 h-4" />
-              <span>مرفوضة</span>
-            </>
-          )}
-        </div>
-      </td>
-
       <td className="px-6 py-4 text-center">
         <button
           onClick={() => window.open(student.imageUrl, '_blank')}

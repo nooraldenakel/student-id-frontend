@@ -20,13 +20,14 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
 }) => {
   const sections = [
     'جميع الأقسام',
-    'علوم الحاسوب',
-    'الهندسة المدنية',
-    'إدارة الأعمال',
-    'الطب',
+    'تقنيات البصريات',
+    'تقنيات الامن السيبراني',
+    'تقنيات المختبرات',
+    'هندسة النفط',
+    'التربية البدنية و علوم الرياضة',
     'الهندسة الكهربائية',
-    'القانون',
-    'الصيدلة'
+    'طب بشري',
+    'صيدلة'
   ]
 
   const studyTypes = ['جميع الأنواع', 'صباحي', 'مسائي']
@@ -35,7 +36,7 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
     { value: 'name', label: 'الاسم' },
     { value: 'section', label: 'القسم' },
     { value: 'studyType', label: 'نوع الدراسة' },
-    { value: 'submissionDate', label: 'تاريخ التقديم' }
+    { value: 'time', label: 'تاريخ التقديم' }
   ]
 
   return (
@@ -128,13 +129,13 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
 
           <button
             onClick={() => onFiltersChange({ 
-              ...filters, 
-              sortOrder: filters.sortOrder === 'asc' ? 'desc' : 'asc'
+                ...filters,
+                sortOrder: filters.sortOrder === 'time_asc' ? 'time_desc' : 'time_asc'
             })}
             className="p-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
-            title={filters.sortOrder === 'asc' ? 'تصاعدي' : 'تنازلي'}
+                      title={filters.sortOrder === 'time_asc' ? 'تصاعدي' : 'تنازلي'}
           >
-            {filters.sortOrder === 'asc' ? (
+                      {filters.sortOrder === 'time_asc' ? (
               <SortAsc className="w-4 h-4 text-gray-600" />
             ) : (
               <SortDesc className="w-4 h-4 text-gray-600" />

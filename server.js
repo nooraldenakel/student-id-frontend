@@ -24,7 +24,6 @@ const backendProxy = createProxyMiddleware({
 });
 
 app.use("/student", backendProxy); // ✅ needed for student/login
-app.use("/api", backendProxy);     // if using /api for anything else
 
 // ✅ SPA fallback
 app.get("*", (req, res) => {

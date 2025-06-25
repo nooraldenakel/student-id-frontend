@@ -7,21 +7,14 @@ export interface Student {
   birthYear: string
   birthDate: string
   imageUrl: string
-  submissionDate: string
-  submissionTime: string
-  imageAnalysis: {
-    headPosition: boolean
-    eyesOpen: boolean
-    glasses: boolean
-    whiteBackground: boolean
-    goodLighting: boolean
-  }
+  time: string
+  symbol: string
 }
 
 export interface StudentFilters {
   searchTerm: string
   section: string
   studyType: string
-  sortBy: 'name' | 'section' | 'studyType' | 'submissionDate'
-  sortOrder: 'asc' | 'desc'
+  sortBy: 'name' | 'section' | 'studyType' | 'time'
+  sortOrder: 'name_asc' | 'name_desc' | 'time_asc' | 'time_desc'
 }
