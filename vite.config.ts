@@ -3,13 +3,12 @@ import react from '@vitejs/plugin-react'
 import { resolve } from 'path'
 
 export default defineConfig({
-    base: '/', // leave as is
-    plugins: [react()],
-    build: {
-        rollupOptions: {
-            input: {
-                main: resolve(__dirname, 'index.html')
+    server: {
+        proxy: {
+            '/student': {
+                target: 'https://student-id-info-back-production.up.railway.app',
+                changeOrigin: true
             }
         }
     }
-})
+});

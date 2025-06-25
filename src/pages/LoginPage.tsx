@@ -58,7 +58,7 @@ const LoginPage = () => {
       // Simulate API call
       try {
           const encodedName = encodeURIComponent(formData.name.trim())
-          const url = `/login/${formData.examCode}/${encodedName}`
+          const url = `/student/login/${formData.examCode}/${encodedName}`
           //const url = `/api/login?examCode=${formData.examCode}&name=${encodeURIComponent(formData.name)}`
           const response = await fetch(url, {
               method: 'POST',

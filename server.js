@@ -9,31 +9,26 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// 🧠 Backend proxy
-const commonProxy = createProxyMiddleware({
+// ✅ Proxy only /student requests
+app.use("/student", createProxyMiddleware({
     target: "https://student-id-info-back-production.up.railway.app",
     changeOrigin: true,
-    selfHandleResponse: false,
-    onProxyReq: (proxyReq, req, res) => {
+    onProxyReq: (proxyReq, req) => {
         const auth = req.headers['authorization'];
         if (auth) {
             proxyReq.setHeader('Authorization', auth);
         }
     }
-});
+}));
 
-// ✅ Proxy only for backend API routes
-app.use("/student", commonProxy);
-
-// ✅ Serve frontend static files (your Vite build)
+// ✅ Serve built frontend files
 app.use(express.static(path.join(__dirname, "dist")));
 
-// ✅ Fallback to index.html for all other frontend routes (SPA support)
+// ✅ Fallback for SPA routing (/admin, /student-info, etc.)
 app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "dist", "index.html"));
 });
 
-// Start server
 app.listen(PORT, () => {
     console.log(`✅ Server running on http://localhost:${PORT}`);
 });
