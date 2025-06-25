@@ -13,17 +13,20 @@ const PORT = process.env.PORT || 3000;
 app.use(express.static(path.join(__dirname, "dist")));
 
 // ✅ Proxy ONLY /api and /student calls
-const backendProxy = createProxyMiddleware({
-    target: "https://student-id-info-back-production.up.railway.app", // or your backend Railway URL
+const proxy = createProxyMiddleware({
+    target: "https://student-id-info-back-production.up.railway.app",
     changeOrigin: true,
+    selfHandleResponse: false,
     onProxyReq: (proxyReq, req) => {
-        const auth = req.headers["authorization"];
-        if (auth) proxyReq.setHeader("Authorization", auth);
+        const auth = req.headers['authorization'];
+        if (auth) {
+            proxyReq.setHeader('Authorization', auth);
+        }
     }
 });
 
-app.use("/api", backendProxy);
-app.use("/student", backendProxy);
+app.use("/api", proxy);
+app.use("/student", proxy);
 
 // ✅ Handle SPA routes (important to go AFTER the proxy!)
 app.get("*", (req, res) => {
