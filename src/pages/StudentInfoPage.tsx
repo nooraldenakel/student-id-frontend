@@ -49,65 +49,65 @@ const StudentInfoPage = () => {
   const [showSuccessModal, setShowSuccessModal] = useState(false)
 
 
+
+  const fetchStudentInfo = async () => {
+        setLoading(true);
+        setFetchingInfo(true);
+
+        try {
+            const response = await fetch(`https://student-id-info-back-production.up.railway.app/student/search?query=${examCode}`, {
+                method: "GET",
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`
+                }
+            });
+
+            if (!response.ok) {
+                console.log("❌ Response not OK:", response.status);
+                throw new Error('Fetch failed');
+            }
+
+            const data = await response.json();
+            console.log("Fetched student data:", data);
+            // Handle optional fields safely
+            const birthYear = data.birthDate ? new Date(data.birthDate).getFullYear().toString() : undefined;
+            const birthDate = data.birthDate || undefined;
+            const imageUrl = data.imageUrl || undefined;
+            let updatedSymbol = data.symbol || undefined;
+            // Set state directly (not from state that hasn't updated yet!)
+            if (birthDate) setBirthDate(birthDate);
+            if (imageUrl) setImagePreview(imageUrl);
+
+            setStudentData({
+                name: studentName || data.name || 'غير معروف',
+                examCode,
+                collegeDepartment: data.section || 'غير محدد',
+                studyType: data.studyType || 'غير محدد',
+                birthYear,
+                birthDate,
+                imageUrl,
+                symbol: updatedSymbol,
+                imageAnalysis: {
+                    headPosition: true,
+                    eyesOpen: true,
+                    glasses: true,
+                    whiteBackground: true,
+                    goodLighting: true
+                }
+            });
+
+        } catch (error) {
+            console.error('❌ Error loading student info:', error);
+            setStudentData(null); // So UI shows "خطأ في تحميل بيانات الطالب"
+        } finally {
+            setLoading(false); // ✅ Always end loading
+            setFetchingInfo(false);
+        }
+    }
   useEffect(() => {
         if (!accessToken || !examCode) {
             navigate('/');
             return;
-        }
-
-        const fetchStudentInfo = async () => {
-            setLoading(true);
-            setFetchingInfo(true);
-
-            try {
-                const response = await fetch(`https://student-id-info-back-production.up.railway.app/student/search?query=${examCode}`, {
-                    method: "GET",
-                    headers: {
-                        'Authorization': `Bearer ${accessToken}`
-                    }
-                });
-
-                if (!response.ok) {
-                    console.log("❌ Response not OK:", response.status);
-                    throw new Error('Fetch failed');
-                }
-
-                const data = await response.json();
-                console.log("Fetched student data:", data);
-                // Handle optional fields safely
-                const birthYear = data.birthDate ? new Date(data.birthDate).getFullYear().toString() : undefined;
-                const birthDate = data.birthDate || undefined;
-                const imageUrl = data.imageUrl || undefined;
-                let updatedSymbol = data.symbol || undefined;
-                // Set state directly (not from state that hasn't updated yet!)
-                if (birthDate) setBirthDate(birthDate);
-                if (imageUrl) setImagePreview(imageUrl);
-                
-                setStudentData({
-                    name: studentName || data.name || 'غير معروف',
-                    examCode,
-                    collegeDepartment: data.section || 'غير محدد',
-                    studyType: data.studyType || 'غير محدد',
-                    birthYear,
-                    birthDate,
-                    imageUrl,
-                    symbol: updatedSymbol,
-                    imageAnalysis: {
-                        headPosition: true,
-                        eyesOpen: true,
-                        glasses: true,
-                        whiteBackground: true,
-                        goodLighting: true
-                    }
-                });
-
-            } catch (error) {
-                console.error('❌ Error loading student info:', error);
-                setStudentData(null); // So UI shows "خطأ في تحميل بيانات الطالب"
-            } finally {
-                setLoading(false); // ✅ Always end loading
-                setFetchingInfo(false);
-            }
         }
         fetchStudentInfo()
     }, [])
@@ -228,8 +228,9 @@ const StudentInfoPage = () => {
             symbol: studentData.symbol
         };
 
-        setStudentData(updatedData);
-        setSelectedImage(null);
+      setStudentData(updatedData);
+      fetchStudentInfo();
+      setSelectedImage(null);
 
         // Optionally refresh page state
         navigate('/student-info', {
