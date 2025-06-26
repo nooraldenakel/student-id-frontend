@@ -2,17 +2,17 @@ import * as XLSX from 'xlsx'
 import { Student } from '../types/Student'
 
 export const exportToExcel = (students: Student[], filename: string = 'students_data') => {
-  // Prepare data for Excel export
+    // Prepare data for Excel export
   const excelData = students.map((student, index) => ({
       'الرقم التسلسلي': index + 1,
-      'اسم الطالب': student.name,
-      'الرقم الامتحاني': student.examCode,
-      'القسم': student.section,
-      'نوع الدراسة': student.studyType,
-      'سنة الميلاد': student.birthYear,
-      'تاريخ التقديم': student.time,
-      'رقم الهوية': student.symbol,
-      'رابط الصورة': student.imageUrl,
+      'اسم الطالب': student.name ?? '',
+      'الرقم الامتحاني': student.examNumber ?? '',
+      'القسم': student.section ?? '',
+      'نوع الدراسة': student.studyType ?? '',
+      'سنة الميلاد': student.birthDate ?? '',
+      'تاريخ التقديم': student.time ?? '',
+      'رقم الهوية': student.symbol ?? '',
+      'رابط الصورة': student.imageUrl ?? '',
   }))
 
   // Create workbook and worksheet
@@ -26,7 +26,7 @@ export const exportToExcel = (students: Student[], filename: string = 'students_
     { wch: 15 }, // الرقم الامتحاني
     { wch: 18 }, // القسم
     { wch: 12 }, // نوع الدراسة
-    { wch: 15 }, // تاريخ الميلاد
+    { wch: 20 }, // تاريخ الميلاد
     { wch: 15 }, // تاريخ التقديم
     { wch:12 },  // رقم الهوية
     { wch: 30 }, // رابط الصورة

@@ -1,10 +1,9 @@
 export interface Student {
   id: string
   name: string
-  examCode: string
+  examNumber: string
   section: string
   studyType: string
-  birthYear: string
   birthDate: string
   imageUrl: string
   time: string
