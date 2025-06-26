@@ -190,7 +190,7 @@ const StudentInfoPage = () => {
       formData.append("image", selectedImage);
 
       try {
-          const response = await fetch(`https://student-id-info-back-production.up.railway.app/student/${examCode}`, {
+          const response = await fetch(`https://student-id-info-back-production.up.railway.app/student/update/${examCode}`, {
               method: "PATCH",
               headers: {
                   Authorization: `Bearer ${accessToken}`
