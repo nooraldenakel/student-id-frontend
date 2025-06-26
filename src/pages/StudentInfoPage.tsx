@@ -23,6 +23,7 @@ interface StudentData {
   birthYear?: string
   birthDate?: string
   imageUrl?: string
+  symbol: String
   imageAnalysis?: ImageAnalysis
 }
 
@@ -37,7 +38,6 @@ const StudentInfoPage = () => {
   const [loading, setLoading] = useState(true)
   const [birthYear, setBirthYear] = useState('')
   const [birthDate, setBirthDate] = useState('')
-  const [inputMethod, setInputMethod] = useState<'manual' | 'calendar'>('manual')
   const [selectedImage, setSelectedImage] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [imageAnalysis, setImageAnalysis] = useState<ImageAnalysis | null>(null)
@@ -78,10 +78,11 @@ const StudentInfoPage = () => {
                 const birthYear = data.birthDate ? new Date(data.birthDate).getFullYear().toString() : undefined;
                 const birthDate = data.birthDate || undefined;
                 const imageUrl = data.imageUrl || undefined;
+                let updatedSymbol = data.symbol || undefined;
                 // Set state directly (not from state that hasn't updated yet!)
                 if (birthDate) setBirthDate(birthDate);
                 if (imageUrl) setImagePreview(imageUrl);
-
+                
                 setStudentData({
                     name: studentName || data.name || 'غير معروف',
                     examCode,
@@ -90,6 +91,7 @@ const StudentInfoPage = () => {
                     birthYear,
                     birthDate,
                     imageUrl,
+                    symbol: updatedSymbol,
                     imageAnalysis: {
                         headPosition: true,
                         eyesOpen: true,
@@ -183,9 +185,9 @@ const StudentInfoPage = () => {
 
         setSubmitting(true);
 
-        const formData = new FormData();
-        formData.append("birthDate", birthYear);
-        formData.append("image", selectedImage);
+      const formData = new FormData();
+      formData.append("birthDate", birthYear);
+      formData.append("image", selectedImage);
 
       try {
           const response = await fetch(`https://student-id-info-back-production.up.railway.app/student/${examCode}`, {
@@ -222,7 +224,8 @@ const StudentInfoPage = () => {
             ...studentData,
             birthYear: birthYear || studentData.birthYear,
             imageUrl: imagePreview || studentData.imageUrl,
-            imageAnalysis: imageAnalysis || studentData.imageAnalysis
+            imageAnalysis: imageAnalysis || studentData.imageAnalysis,
+            symbol: studentData.symbol
         };
 
         setStudentData(updatedData);
@@ -365,6 +368,15 @@ const StudentInfoPage = () => {
                                         <p className="font-bold text-gray-800">{studentData.studyType}</p>
                                     </div>
                                 </div>
+                                {isDataComplete &&(
+                                <div className="flex items-center space-x-3 space-x-reverse p-4 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl border-2 border-emerald-200 shadow-sm hover:shadow-md transition-all duration-200">
+                                    <Hash className="w-5 h-5 text-emerald-600" />
+                                    <div className="text-right">
+                                        <p className="text-sm text-emerald-600 font-medium">رقم الهوية الجامعية</p>
+                                        <p className="font-bold text-gray-800">{studentData.symbol}</p>
+                                    </div>
+                                </div>
+                                )}
                             </div>
                         </motion.div>
 
