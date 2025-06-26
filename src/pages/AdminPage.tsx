@@ -155,7 +155,7 @@ const AdminPage = () => {
 
     // Statistics
     const stats = useMemo(() => {
-        const submittedStudents = students.filter(s => Boolean(s.time)); // ✅ Only submitted
+        const submittedStudents = students.filter(s => Boolean(s.time)); // ✅ Only submitteddd
         const total = submittedStudents.length;
 
         const sections = [...new Set(submittedStudents.map(s => s.section))].length;
