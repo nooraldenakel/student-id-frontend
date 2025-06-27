@@ -113,17 +113,17 @@ const StudentInfoPage = () => {
     }, [])
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (file) {
-      setSelectedImage(file)
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        setImagePreview(e.target?.result as string)
-        analyzeImage()
-      }
-      reader.readAsDataURL(file)
+        const file = event.target.files?.[0]
+        if (file) {
+            setSelectedImage(file)
+            const reader = new FileReader()
+            reader.onload = (e) => {
+                setImagePreview(e.target?.result as string)
+                analyzeImage(file) // pass the file
+            }
+            reader.readAsDataURL(file)
+        }
     }
-  }
 
   const handleImageRemove = () => {
     setSelectedImage(null)
@@ -132,23 +132,44 @@ const StudentInfoPage = () => {
     setAnalyzingImage(false)
   }
 
-  const analyzeImage = () => {
-    setAnalyzingImage(true)
-    setImageAnalysis(null)
+  const analyzeImage = async (file: File) => {
+        setAnalyzingImage(true)
+        setImageAnalysis(null)
 
-    // Simulate image analysis
-    setTimeout(() => {
-      const analysis: ImageAnalysis = {
-        headPosition: Math.random() > 0.1,
-        eyesOpen: Math.random() > 0.1,
-        glasses: Math.random() > 0.1,
-        whiteBackground: Math.random() > 0.1,
-        goodLighting: Math.random() > 0.1
-      }
-      setImageAnalysis(analysis)
-      setAnalyzingImage(false)
-    }, 2000)
-  }
+        try {
+            const formData = new FormData()
+            formData.append("image", file)
+
+            const response = await fetch("https://student-id-info-back-production.up.railway.app/student/analyze-image", {
+                method: "POST",
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`
+                },
+                body: formData
+            })
+
+            if (!response.ok) {
+                throw new Error(`Error ${response.status}`)
+            }
+
+            const data = await response.json()
+            console.log("✅ Image analysis result:", data)
+
+            setImageAnalysis({
+                headPosition: typeof data.head_centered === 'boolean' ? data.head_centered : false,
+                eyesOpen: typeof data.eyes_open === 'boolean' ? data.eyes_open : false,
+                //glasses: !(data.no_glasses ?? true), // since your GPT returns no_glasses, invert it
+                glasses: !(typeof data.no_glasses === 'boolean' ? !data.no_glasses : true),
+                whiteBackground: typeof data.white_background === 'boolean' ? data.white_background : false,
+                goodLighting: typeof data.good_lighting === 'boolean' ? data.good_lighting : false
+            })
+        } catch (err) {
+            console.error("❌ Failed to analyze image:", err)
+            alert("فشل في تحليل الصورة. يرجى المحاولة مرة أخرى.")
+        } finally {
+            setAnalyzingImage(false)
+        }
+    }
 
   const handleDateChange = (date: string) => {
     setBirthDate(date)
