@@ -91,7 +91,7 @@ const AdminPage = () => {
     useEffect(() => {
         const fetchStudents = async () => {
             try {
-                const url = `https://student-id-info-back-production.up.railway.app/student/?sort=time_desc&pageSize=${studentsPerPage}&page=${currentPage}`;
+                const url = `https://student-id-info-back-production.up.railway.app/student/get-all?sort=time_desc&pageSize=${studentsPerPage}&page=${currentPage}`;
                 const response = await fetch(url, {
                     method: 'GET',
                     headers: {
