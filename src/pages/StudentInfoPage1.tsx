@@ -1,62 +1,56 @@
 import React, { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import {
-    User, Hash, GraduationCap, Clock, Calendar,
-    Check, X, Upload, Eye, Glasses,
-    Sun, Square, AlertCircle, CheckCircle2, Trash2, AlertTriangle
+import { 
+    User, Hash, GraduationCap, Clock, Calendar,  //Camera,
+    Check, Upload, Eye, Glasses, //X, ArrowRight,
+  Sun, Square, AlertCircle, CheckCircle2, Trash2
 } from 'lucide-react'
 
 interface ImageAnalysis {
-    headPosition: boolean
-    eyesOpen: boolean
-    glasses: boolean
-    whiteBackground: boolean
-    goodLighting: boolean
-};
+  headPosition: boolean
+  eyesOpen: boolean
+  glasses: boolean
+  whiteBackground: boolean
+  goodLighting: boolean
+}
+
 interface StudentData {
-    name: string
-    examCode: string
-    collegeDepartment: string
-    studyType: string
-    birthYear?: string
-    birthDate?: string
-    imageUrl?: string
-    symbol: String
-    imageAnalysis?: ImageAnalysis
+  name: string
+  examCode: string
+  collegeDepartment: string
+  studyType: string
+  birthYear?: string
+  birthDate?: string
+  imageUrl?: string
+  symbol: String
+  imageAnalysis?: ImageAnalysis
 }
 
 const StudentInfoPage = () => {
-    const location = useLocation()
-    const navigate = useNavigate()
-    const { studentName, examCode } = location.state || {}
+  const location = useLocation()
+  const navigate = useNavigate()
+  const { studentName, examCode } = location.state || {}
 
-    const accessToken = localStorage.getItem("accessToken");
-    const refreshToken = localStorage.getItem("refreshToken");
-    const [studentData, setStudentData] = useState<StudentData | null>(null)
-    const [loading, setLoading] = useState(true)
-    const [birthYear, setBirthYear] = useState('')
-    const [birthDate, setBirthDate] = useState('')
-    const [selectedImage, setSelectedImage] = useState<File | null>(null)
-    const [imagePreview, setImagePreview] = useState<string | null>(null)
-    const [imageAnalysis, setImageAnalysis] = useState<ImageAnalysis | null>(null)
-    const [analyzingImage, setAnalyzingImage] = useState(false)
-    const [submitting, setSubmitting] = useState(false)
-    const [fetchingInfo, setFetchingInfo] = useState(false)
-    const [showSuccessModal, setShowSuccessModal] = useState(false)
-    const [showConfirmationDialog, setShowConfirmationDialog] = useState(false)
+  const accessToken = localStorage.getItem("accessToken");
+  const refreshToken = localStorage.getItem("refreshToken");
+  const [studentData, setStudentData] = useState<StudentData | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [birthYear, setBirthYear] = useState('')
+  const [birthDate, setBirthDate] = useState('')
+  const [selectedImage, setSelectedImage] = useState<File | null>(null)
+  const [imagePreview, setImagePreview] = useState<string | null>(null)
+  const [imageAnalysis, setImageAnalysis] = useState<ImageAnalysis | null>(null)
+  const [analyzingImage, setAnalyzingImage] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [fetchingInfo, setFetchingInfo] = useState(false)
+  const isDataComplete = studentData?.birthYear && studentData?.imageUrl
+  const hasExistingImage = studentData?.imageUrl && !selectedImage
+  const [showSuccessModal, setShowSuccessModal] = useState(false)
 
-    // Image upload rate limiting
-    const [imageUploadCount, setImageUploadCount] = useState(0)
-    const [isRateLimited, setIsRateLimited] = useState(false)
-    const [rateLimitCountdown, setRateLimitCountdown] = useState(0)
-    const [showRateLimitDialog, setShowRateLimitDialog] = useState(false)
 
-    // Check if data is already complete (preview mode)
-    const isDataComplete = studentData?.birthYear && studentData?.imageUrl
-    const hasExistingImage = studentData?.imageUrl && !selectedImage
 
-    const fetchStudentInfo = async () => {
+  const fetchStudentInfo = async () => {
         setLoading(true);
         setFetchingInfo(true);
 
@@ -111,7 +105,7 @@ const StudentInfoPage = () => {
         }
     }
 
-    useEffect(() => {
+  useEffect(() => {
         if (!accessToken || !examCode) {
             navigate('/');
             return;
@@ -119,63 +113,27 @@ const StudentInfoPage = () => {
         fetchStudentInfo()
     }, [])
 
-    // Rate limiting countdown effect
-    useEffect(() => {
-        let interval: NodeJS.Timeout
-        if (rateLimitCountdown > 0) {
-            interval = setInterval(() => {
-                setRateLimitCountdown(prev => {
-                    if (prev <= 1) {
-                        setIsRateLimited(false)
-                        setImageUploadCount(0)
-                        return 0
-                    }
-                    return prev - 1
-                })
-            }, 1000)
-        }
-        return () => clearInterval(interval)
-    }, [rateLimitCountdown])
-
-    const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-        // Check rate limiting
-        if (isRateLimited) {
-            setShowRateLimitDialog(true)
-            return
-        }
-
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0]
         if (file) {
-            // Increment upload count
-            const newCount = imageUploadCount + 1
-            setImageUploadCount(newCount)
-
-            // Check if rate limit reached
-            if (newCount >= 2) {
-                setIsRateLimited(true)
-                setRateLimitCountdown(30)
-                setShowRateLimitDialog(true)
-                return
-            }
-
             setSelectedImage(file)
             const reader = new FileReader()
             reader.onload = (e) => {
                 setImagePreview(e.target?.result as string)
-                analyzeImage(file)
+                analyzeImage(file) // pass the file
             }
             reader.readAsDataURL(file)
         }
     }
 
-    const handleImageRemove = () => {
-        setSelectedImage(null)
-        setImagePreview(studentData?.imageUrl || null)
-        setImageAnalysis(studentData?.imageAnalysis || null)
-        setAnalyzingImage(false)
-    }
+  const handleImageRemove = () => {
+    setSelectedImage(null)
+    setImagePreview(studentData?.imageUrl || null)
+    setImageAnalysis(studentData?.imageAnalysis || null)
+    setAnalyzingImage(false)
+  }
 
-    const analyzeImage = async (file: File) => {
+  const analyzeImage = async (file: File) => {
         setAnalyzingImage(true)
         setImageAnalysis(null)
 
@@ -212,34 +170,36 @@ const StudentInfoPage = () => {
         } finally {
             setAnalyzingImage(false)
         }
-    };
-
-    const handleYearChange = (year: string) => {
-        setBirthYear(year)
-    };
-
-    const isFormValid = () => {
-        // Check if birth data exists (either from API or user input)
-        const hasBirthData = studentData?.birthYear || birthYear
-
-        // Check if image exists (either from API or user upload)
-        const hasImage = studentData?.imageUrl || selectedImage
-
-        // Check if image analysis exists and is valid (either from API or new analysis)
-        const hasValidImageAnalysis = imageAnalysis && Object.values(imageAnalysis).every(result => result === true)
-
-        return hasBirthData && hasImage && hasValidImageAnalysis
     }
 
-    const handleSubmitClick = () => {
-        if (!isFormValid()) {
-            return
-        }
-        setShowConfirmationDialog(true)
+  const handleDateChange = (date: string) => {
+    setBirthDate(date)
+    if (date) {
+      const year = new Date(date).getFullYear()
+      setBirthYear(year.toString())
     }
+  }
 
-    const handleConfirmSubmit = async () => {
-        setShowConfirmationDialog(false)
+  const handleYearChange = (year: string) => {
+    setBirthYear(year)
+    // Clear calendar date when manually entering year
+    setBirthDate('')
+  }
+
+  const isFormValid = () => {
+    // Check if birth data exists (either from API or user input)
+    const hasBirthData = studentData?.birthYear || studentData?.birthDate || birthYear || birthDate
+    
+    // Check if image exists (either from API or user upload)
+    const hasImage = studentData?.imageUrl || selectedImage
+    
+    // Check if image analysis exists and is valid (either from API or new analysis)
+    const hasValidImageAnalysis = imageAnalysis && Object.values(imageAnalysis).every(result => result === true)
+    
+    return hasBirthData && hasImage && hasValidImageAnalysis
+  }
+
+  const handleSubmit = async () => {
         if (!isFormValid() || !selectedImage) {
             alert("❌ Please select an image and ensure analysis passed.");
             return;
@@ -247,41 +207,37 @@ const StudentInfoPage = () => {
 
         setSubmitting(true);
 
-        const formData = new FormData();
-        formData.append("birthDate", birthYear);
-        formData.append("image", selectedImage);
+      const formData = new FormData();
+      formData.append("birthDate", birthYear);
+      formData.append("image", selectedImage);
 
-        try {
-            const response = await fetch(`https://student-id-info-back-production.up.railway.app/student/update/${examCode}`, {
-                method: "PATCH",
-                headers: {
-                    Authorization: `Bearer ${accessToken}`
-                },
-                body: formData,
-            });
+      try {
+          const response = await fetch(`https://student-id-info-back-production.up.railway.app/student/update/${examCode}`, {
+              method: "PATCH",
+              headers: {
+                  Authorization: `Bearer ${accessToken}`
+              },
+              body: formData,
+          });
 
-            if (!response.ok) {
-                const errorText = await response.text(); // log for debugging
-                throw new Error(`Error ${response.status}: ${errorText}`);
-            }
+          if (!response.ok) {
+              const errorText = await response.text(); // log for debugging
+              throw new Error(`Error ${response.status}: ${errorText}`);
+          }
 
-            // ✅ SAFELY HANDLE JSON PARSING
-            const text = await response.text(); // Add this!
-            console.log("📄 Raw response text:", text);
-            setShowSuccessModal(true);
+          // ✅ SAFELY HANDLE JSON PARSING
+          const text = await response.text(); // Add this!
+          console.log("📄 Raw response text:", text);
+          setShowSuccessModal(true);
 
-        } catch (err) {
-            console.error("❌ Submission failed:", err);
-        } finally {
+      } catch (err) {
+          console.error("❌ Submission failed:", err);
+      } finally {
             setSubmitting(false);
         }
-    }
+    };
 
-    const handleCancelSubmit = () => {
-        setShowConfirmationDialog(false)
-    }
-
-    const handleSuccessModalClose = () => {
+  const handleSuccessModalClose = () => {
         setShowSuccessModal(false);
 
         if (!studentData) return;
@@ -294,9 +250,9 @@ const StudentInfoPage = () => {
             symbol: studentData.symbol
         };
 
-        setStudentData(updatedData);
-        fetchStudentInfo();
-        setSelectedImage(null);
+      setStudentData(updatedData);
+      fetchStudentInfo();
+      setSelectedImage(null);
 
         // Optionally refresh page state
         navigate('/student-info', {
@@ -308,39 +264,40 @@ const StudentInfoPage = () => {
         });
     };
 
-    const renderAnalysisItem = (
-        label: string,
-        result: boolean,
-        icon: React.ReactNode,
-        description: string
-    ) => (
-        <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="flex items-center justify-between p-4 bg-white/50 rounded-xl border border-gray-200"
-        >
-            <div className={`flex items-center space-x-2 px-3 py-1 rounded-full ${result ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
-                }`}>
-                {result ? (
-                    <CheckCircle2 className="w-4 h-4" />
-                ) : (
-                    <AlertCircle className="w-4 h-4" />
-                )}
-                <span className="text-sm font-medium">
-                    {result ? 'صالح' : 'غير صالح'}
-                </span>
-            </div>
-            <div className="flex items-center space-x-3 space-x-reverse">
-                <div>
-                    <p className="font-medium text-gray-800 text-right">{label}</p>
-                    <p className="text-sm text-gray-600 text-right">{description}</p>
-                </div>
-                <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                    {icon}
-                </div>
-            </div>
-        </motion.div>
-    )
+  const renderAnalysisItem = (
+    label: string,
+    result: boolean,
+    icon: React.ReactNode,
+    description: string
+  ) => (
+    <motion.div 
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      className="flex items-center justify-between p-4 bg-white/50 rounded-xl border border-gray-200"
+    >
+      <div className={`flex items-center space-x-2 px-3 py-1 rounded-full ${
+        result ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+      }`}>
+        {result ? (
+          <CheckCircle2 className="w-4 h-4" />
+        ) : (
+          <AlertCircle className="w-4 h-4" />
+        )}
+        <span className="text-sm font-medium">
+          {result ? 'صالح' : 'غير صالح'}
+        </span>
+      </div>
+      <div className="flex items-center space-x-3 space-x-reverse">
+        <div>
+          <p className="font-medium text-gray-800 text-right">{label}</p>
+          <p className="text-sm text-gray-600 text-right">{description}</p>
+        </div>
+        <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+          {icon}
+        </div>
+      </div>
+    </motion.div>
+  )
 
     if (loading) {
         return (
@@ -350,9 +307,8 @@ const StudentInfoPage = () => {
                     <p className="text-gray-600">جاري تحميل بيانات الطالب...</p>
                 </div>
             </div>
-        )
+        );
     }
-
     if (!studentData) {
         return (
             <div className="min-h-screen flex items-center justify-center">
@@ -360,7 +316,7 @@ const StudentInfoPage = () => {
                     <p className="text-red-600">خطأ في تحميل بيانات الطالب</p>
                 </div>
             </div>
-        )
+        );
     }
 
     return (
@@ -435,14 +391,14 @@ const StudentInfoPage = () => {
                                         <p className="font-bold text-gray-800">{studentData.studyType}</p>
                                     </div>
                                 </div>
-                                {isDataComplete && (
-                                    <div className="flex items-center space-x-3 space-x-reverse p-4 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl border-2 border-emerald-200 shadow-sm hover:shadow-md transition-all duration-200">
-                                        <Hash className="w-5 h-5 text-emerald-600" />
-                                        <div className="text-right">
-                                            <p className="text-sm text-emerald-600 font-medium">رقم الهوية الجامعية</p>
-                                            <p className="font-bold text-gray-800">{studentData.symbol}</p>
-                                        </div>
+                                {isDataComplete &&(
+                                <div className="flex items-center space-x-3 space-x-reverse p-4 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl border-2 border-emerald-200 shadow-sm hover:shadow-md transition-all duration-200">
+                                    <Hash className="w-5 h-5 text-emerald-600" />
+                                    <div className="text-right">
+                                        <p className="text-sm text-emerald-600 font-medium">رقم الهوية الجامعية</p>
+                                        <p className="font-bold text-gray-800">{studentData.symbol}</p>
                                     </div>
+                                </div>
                                 )}
                             </div>
                         </motion.div>
@@ -461,7 +417,7 @@ const StudentInfoPage = () => {
                                 <div className="flex items-center space-x-3 space-x-reverse p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border-2 border-green-300 shadow-sm">
                                     <Calendar className="w-5 h-5 text-green-600" />
                                     <div className="text-right">
-                                        <p className="text-sm text-green-600 font-medium">سنة الميلاد</p>
+                                        <p className="text-sm text-green-600 font-medium">سنة التولد</p>
                                         <p className="font-bold text-green-800 text-2xl">{studentData.birthYear}</p>
                                     </div>
                                 </div>
@@ -526,6 +482,7 @@ const StudentInfoPage = () => {
                                         <div className="mt-4 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border-2 border-green-300">
                                             <CheckCircle2 className="w-8 h-8 text-green-600 mx-auto mb-2" />
                                             <p className="text-green-700 font-bold">تم حفظ الصورة بنجاح</p>
+                                            <p className="text-green-600 text-sm mt-1">الصورة مقبولة ومحفوظة في النظام</p>
                                         </div>
                                     </div>
                                 ) : !selectedImage ? (
@@ -536,21 +493,14 @@ const StudentInfoPage = () => {
                                             accept="image/*"
                                             onChange={handleImageUpload}
                                             className="hidden"
-                                            disabled={isRateLimited}
                                         />
-                                        <div className={`border-2 border-dashed rounded-xl p-8 text-center transition-colors cursor-pointer ${isRateLimited
-                                                ? 'border-red-400 bg-red-50 cursor-not-allowed'
-                                                : 'border-blue-400 hover:border-blue-500 bg-gradient-to-r from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100'
-                                            }`}>
-                                            <Upload className={`w-12 h-12 mx-auto mb-4 ${isRateLimited ? 'text-red-500' : 'text-blue-500'}`} />
-                                            <p className={`font-semibold mb-2 ${isRateLimited ? 'text-red-600' : 'text-blue-600'}`}>
-                                                {isRateLimited ? 'تم تجاوز الحد المسموح' : 'رفع الصورة'}
+                                        <div className="border-2 border-dashed border-blue-400 rounded-xl p-8 text-center hover:border-blue-500 transition-colors cursor-pointer bg-gradient-to-r from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100">
+                                            <Upload className="w-12 h-12 text-blue-500 mx-auto mb-4" />
+                                            <p className="text-blue-600 font-semibold mb-2">
+                                                رفع الصورة
                                             </p>
                                             <p className="text-sm text-gray-600">
-                                                {isRateLimited
-                                                    ? `انتظر ${rateLimitCountdown} ثانية قبل المحاولة مرة أخرى`
-                                                    : 'انقر لاختيار ملف الصورة'
-                                                }
+                                                انقر لاختيار ملف الصورة
                                             </p>
                                         </div>
                                     </label>
@@ -646,7 +596,7 @@ const StudentInfoPage = () => {
                                 transition={{ delay: 0.4 }}
                             >
                                 <button
-                                    onClick={handleSubmitClick}
+                                    onClick={handleSubmit}
                                     disabled={!isFormValid() || submitting}
                                     className="btn-primary w-full flex items-center justify-center space-x-2 space-x-reverse py-4 border-2 border-blue-400"
                                 >
@@ -667,7 +617,7 @@ const StudentInfoPage = () => {
                                         className="text-red-600 text-sm text-center mt-3 p-3 bg-red-50 rounded-lg border-2 border-red-200"
                                     >
                                         {!studentData.birthYear && !birthYear &&
-                                            "يرجى إدخال سنة الميلاد"}
+                                            "يرجى إدخال سنة التولد"}
                                         {(!studentData.imageUrl && !selectedImage) &&
                                             "يرجى رفع الصورة الشخصية"}
                                         {imageAnalysis && !Object.values(imageAnalysis).every(result => result === true) &&
@@ -679,118 +629,6 @@ const StudentInfoPage = () => {
                     </div>
                 </div>
             </div>
-
-            {/* Confirmation Dialog */}
-            <AnimatePresence>
-                {showConfirmationDialog && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
-                    >
-                        <motion.div
-                            initial={{ scale: 0.8, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            exit={{ scale: 0.8, opacity: 0 }}
-                            className="bg-white rounded-2xl p-8 max-w-md w-full mx-auto shadow-2xl border-2 border-orange-200"
-                        >
-                            <div className="text-center">
-                                <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                                    <AlertTriangle className="w-8 h-8 text-white" />
-                                </div>
-
-                                <h3 className="text-2xl font-bold text-gray-800 mb-4">
-                                    تأكيد الإرسال
-                                </h3>
-
-                                <div className="text-right mb-6 space-y-4">
-                                    <div className="bg-orange-50 border-2 border-orange-200 rounded-xl p-4">
-                                        <p className="text-orange-800 font-bold mb-2">يرجى العلم أن:</p>
-                                        <ul className="text-orange-700 text-sm space-y-1 text-right">
-                                            <li>1️⃣• يمكن ارسال هذه المعلومات مرة واحدة فقط</li>
-                                            <li>❌• لن تتمكن من تحديث بياناتك مرة أخرى</li>
-                                            <li>✔️• تأكد من صحة جميع البيانات المدخلة قبل المتابعة</li>
-                                        </ul>
-                                    </div>
-
-                                    <p className="text-gray-600 font-medium">
-                                        هل أنت متأكد من أنك تريد المتابعة؟
-                                    </p>
-                                </div>
-
-                                <div className="flex space-x-3 space-x-reverse">
-                                    <button
-                                        onClick={handleCancelSubmit}
-                                        className="flex-1 btn-secondary py-3 flex items-center justify-center space-x-2 space-x-reverse"
-                                    >
-                                        <span>إلغاء</span>
-                                        <X className="w-5 h-5" />
-                                    </button>
-
-                                    <button
-                                        onClick={handleConfirmSubmit}
-                                        className="flex-1 btn-primary py-3 flex items-center justify-center space-x-2 space-x-reverse"
-                                    >
-                                        <span>نعم، متأكد</span>
-                                        <Check className="w-5 h-5" />
-                                    </button>
-                                </div>
-                            </div>
-                        </motion.div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-
-            {/* Rate Limit Dialog */}
-            <AnimatePresence>
-                {showRateLimitDialog && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
-                    >
-                        <motion.div
-                            initial={{ scale: 0.8, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            exit={{ scale: 0.8, opacity: 0 }}
-                            className="bg-white rounded-2xl p-8 max-w-md w-full mx-auto shadow-2xl border-2 border-red-200"
-                        >
-                            <div className="text-center">
-                                <div className="w-16 h-16 bg-gradient-to-r from-red-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                                    <Clock className="w-8 h-8 text-white" />
-                                </div>
-
-                                <h3 className="text-2xl font-bold text-gray-800 mb-4">
-                                    تحليل الصور متواصل
-                                </h3>
-
-                                <div className="text-center mb-6 space-y-4">
-                                    <p className="text-gray-700 leading-relaxed">
-                                        التحليل المتواصل قيد التقدم حالياً.
-                                    </p>
-
-                                    <div className="bg-red-50 border-2 border-red-200 rounded-xl p-4">
-                                        <p className="text-red-800 font-bold mb-2">يرجى الانتظار</p>
-                                        <p className="text-red-700 text-sm">
-                                            انتظر {rateLimitCountdown} ثانية وحاول مرة أخرى لتجنب إرهاق النظام
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <button
-                                    onClick={() => setShowRateLimitDialog(false)}
-                                    className="btn-primary w-full py-3 flex items-center justify-center space-x-2 space-x-reverse"
-                                >
-                                    <span>موافق</span>
-                                    <Check className="w-5 h-5" />
-                                </button>
-                            </div>
-                        </motion.div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
 
             {/* Success Modal */}
             <AnimatePresence>
@@ -817,7 +655,7 @@ const StudentInfoPage = () => {
                                 </h3>
 
                                 <p className="text-gray-600 mb-6 leading-relaxed">
-                                    تم حفظ معلوماتك بنجاح في النظام. يرجى ذكر رقم الهوية الجامعية عند المطالبة بها..
+                                    تم حفظ معلوماتك بنجاح ✔️.
                                 </p>
 
                                 <div className="space-y-3">
