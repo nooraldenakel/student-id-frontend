@@ -151,7 +151,7 @@ const StudentInfoPage = () => {
             setImageUploadCount(newCount)
 
             // Check if rate limit reached
-            if (newCount >= 2) {
+            if (newCount >= 3) {
                 setIsRateLimited(true)
                 setRateLimitCountdown(30)
                 setShowRateLimitDialog(true)
